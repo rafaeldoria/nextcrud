@@ -1,25 +1,21 @@
 import Button from "../components/Button";
+import Form from "../components/Form";
 import Layout from "../components/Layout";
 import Table from "../components/Table";
-import Client from "../core/Client";
+import useClients from "../hooks/useClients";
 
 export default function Home() {
 
-  const clients = [
-    new Client('Cláudio', 25, 'claudio@example.com', '1'),
-    new Client('Edvan', 27, 'edvan@example.com', '2'),
-    new Client('Charles', 35, 'charles@example.com', '3'),
-    new Client('João', 24, 'charles@example.com', '4'),
-  ]
-
-  function selectedClient(client: Client) {
-    console.log(client.name)
-    // console.log(client.email)
-  }
-  
-  function deletedClient(client: Client) {
-    console.log(`excluir: ${client.id}`)
-  }
+  const {
+    client,
+    clients,
+    selectedClient,
+    deletedClient,
+    newClient,
+    saveClient,
+    tableVisible,
+    showTable
+  } = useClients()
 
   return (
     <div className={`
@@ -28,16 +24,28 @@ export default function Home() {
       text-white
     `}>
       <Layout title="Cadastro">
-        <div className="flex justify-end">
-          <Button className="mb-4">
-            New Client
-          </Button>
-        </div>
-        <Table 
-          clients={clients}
-          selectedClient={selectedClient}
-          deletedClient={deletedClient}
-        ></Table>
+        {tableVisible ? (
+        <>
+          <div className="flex justify-end">
+            <Button className="mb-4" 
+              onClick={newClient}
+            >
+              New Client
+            </Button>
+          </div>
+          <Table 
+            clients={clients}
+            selectedClient={selectedClient}
+            deletedClient={deletedClient}
+          />
+        </>
+        ): (
+          <Form 
+            client={client}
+            changeClient={saveClient}
+            canceled={showTable}
+          />
+        )}
       </Layout>
     </div>
   )
